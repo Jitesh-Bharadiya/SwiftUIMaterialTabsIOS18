@@ -74,7 +74,7 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
         _scrollModel = StateObject(
             wrappedValue: ScrollModel(
                 tab: tab,
-                scrollMode: .scrollPosition,
+                scrollMode: .scrollAnchor,
                 reservedItem: .item
             )
         )
