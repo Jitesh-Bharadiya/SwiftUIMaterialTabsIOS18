@@ -181,6 +181,7 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
             case .scrollAnchor:
                 content
                     .scrollPosition(id: $scrollModel.scrollItem, anchor: scrollModel.scrollUnitPoint)
+                    .scrollPosition($scrollPosition)
             case .scrollPosition:
                 content
                     .scrollPosition($scrollPosition)
