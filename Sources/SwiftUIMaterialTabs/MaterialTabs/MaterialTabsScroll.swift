@@ -74,7 +74,7 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
         _scrollModel = StateObject(
             wrappedValue: ScrollModel(
                 tab: tab,
-                scrollMode: .scrollAnchor,
+                scrollMode: .scrollPosition,
                 reservedItem: .item
             )
         )
@@ -181,7 +181,6 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
             case .scrollAnchor:
                 content
                     .scrollPosition(id: $scrollModel.scrollItem, anchor: scrollModel.scrollUnitPoint)
-                    .scrollPosition($scrollPosition)
             case .scrollPosition:
                 content
                     .scrollPosition($scrollPosition)
