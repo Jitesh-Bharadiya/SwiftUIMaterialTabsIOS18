@@ -12,6 +12,7 @@ import SwiftUI
 ///
 /// Never apply the `scrollPosition()` view modifier to this view because it is already being applied internally. You are free to apply
 /// `scrollTargetLayout()` to your content as needed.
+@available(iOS 18.0, *)
 public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, Tab: Hashable, Item: Hashable {
 
     // MARK: - API
@@ -24,30 +25,30 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
     ///
     /// Never apply the `scrollPosition()` view modifier to this view because it is already being applied internally. You are free to apply
     /// `scrollTargetLayout()` to your content as needed.
-    public init(
-        tab: Tab,
-        @ViewBuilder content: @escaping (_ context: MaterialTabsScrollContext<Tab>) -> Content
-    ) where Item == ScrollItem {
-        #if canImport(ScrollPosition)
-        self.init(
-            tab: tab,
-            scrollPosition: scrollPosition
-        )
-        #else
-        self.tab = tab
-        self.reservedItem = .item
-        _scrollItem = .constant(nil)
-        _scrollUnitPoint = .constant(.top)
-        _scrollModel = StateObject(
-            wrappedValue: ScrollModel(
-                tab: tab,
-                scrollMode: .scrollAnchor,
-                reservedItem: .item
-            )
-        )
-        self.content = content
-        #endif
-    }
+//    public init(
+//        tab: Tab,
+//        @ViewBuilder content: @escaping (_ context: MaterialTabsScrollContext<Tab>) -> Content
+//    ) where Item == ScrollItem {
+//        #if canImport(ScrollPosition)
+//        self.init(
+//            tab: tab,
+//            scrollPosition: scrollPosition
+//        )
+//        #else
+//        self.tab = tab
+//        self.reservedItem = .item
+//        _scrollItem = .constant(nil)
+//        _scrollUnitPoint = .constant(.top)
+//        _scrollModel = StateObject(
+//            wrappedValue: ScrollModel(
+//                tab: tab,
+//                scrollMode: .scrollAnchor,
+//                reservedItem: .item
+//            )
+//        )
+//        self.content = content
+//        #endif
+//    }
 
     /// Constructs a scroll for the given tab with external bindings for joint manipulation of the scroll position.
     ///
@@ -61,23 +62,26 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
     ///
     /// Never apply the `scrollPosition()` view modifier to this view because it is already being applied internally. You are free to apply
     /// `scrollTargetLayout()` to your content as needed.
-    #if canImport(ScrollPosition)
+    @available(iOS 18.0, *)
     public init(
         tab: Tab,
         scrollPosition: Binding<ScrollPosition>,
         @ViewBuilder content: @escaping (_ context: MaterialTabsScrollContext<Tab>) -> Content
-    ) {
+    ) where Item == ScrollItem {
         self.tab = tab
         _scrollPosition = scrollPosition
+        self.reservedItem = .item
         _scrollModel = StateObject(
             wrappedValue: ScrollModel(
                 tab: tab,
-                reservedItem: reservedItem
+                scrollMode: .scrollPosition,
+                reservedItem: .item
             )
         )
+        _scrollItem = .constant(nil)
+        _scrollUnitPoint = .constant(.top)
         self.content = content
     }
-    #endif
 
     /// Constructs a scroll for the given tab with external bindings for joint manipulation of the scroll position.
     ///
@@ -116,6 +120,8 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
             )
         )
         self.content = content
+        
+        self._scrollPosition = .constant(.init())
     }
 
     // MARK: - Constants
@@ -125,9 +131,7 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
     private let tab: Tab
     private let reservedItem: Item?
     @State private var coordinateSpaceName = UUID()
-    #if canImport(ScrollPosition)
-    @Binding private var scrollPosition = ScrollPosition(idType: Item.self)
-    #endif
+    @Binding private var scrollPosition: ScrollPosition
     @Binding private var scrollItem: Item?
     @Binding private var scrollUnitPoint: UnitPoint
     @StateObject private var scrollModel: ScrollModel<Item, Tab>
@@ -178,12 +182,8 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
                 content
                     .scrollPosition(id: $scrollModel.scrollItem, anchor: scrollModel.scrollUnitPoint)
             case .scrollPosition:
-                #if canImport(ScrollPosition)
                 content
-                    .scrollPosition(scrollPosition)
-                #else
-                content
-                #endif
+                    .scrollPosition($scrollPosition)
             }
         }
         .transaction(value: scrollModel.scrollItem) { transation in
@@ -216,14 +216,10 @@ public struct MaterialTabsScroll<Content, Tab, Item>: View where Content: View, 
             scrollModel.scrollUnitPointChanged(scrollUnitPoint)
         }
         .map { content in
-            #if canImport(ScrollPosition)
             content
-                .onChange(of: scrollPosition, intial: true) {
+                .onChange(of: scrollPosition, initial: true) {
                     scrollModel.scrollPositionChanged(scrollPosition)
                 }
-            #else
-            content
-            #endif
         }
         .onChange(of: headerModel.state.headerContext.height) {
             scrollModel.headerHeightChanged()

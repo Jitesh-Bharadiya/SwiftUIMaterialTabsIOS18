@@ -19,6 +19,8 @@ struct TestStickyHeaderScroll: View {
     @State private var scrollItem: Int?
     @State private var scrollUnitPoint: UnitPoint = .top
 
+    
+    @State private var scrollPosition = ScrollPosition()
     // MARK: - Body
 
     var body: some View {
@@ -35,8 +37,11 @@ struct TestStickyHeaderScroll: View {
                             Rectangle().fill(.black.opacity(0.2)).frame(height: 1)
                             Spacer()
                             Button("Tap Row \(index)") {
-                                scrollUnitPoint = .top
-                                scrollItem = index
+//                                scrollUnitPoint = .top
+//                                scrollItem = index
+                                withAnimation {
+                                    scrollPosition.scrollTo(y: 200)
+                                }
                             }
                             .buttonStyle(.bordered)
                             Spacer()
@@ -47,7 +52,7 @@ struct TestStickyHeaderScroll: View {
                 }
                 .scrollTargetLayout()
             }
-            .scrollPosition(id: $scrollItem, anchor: scrollUnitPoint)
+            .scrollPosition($scrollPosition)
         }.animation(.default, value: scrollItem)
     }
 }

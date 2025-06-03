@@ -23,11 +23,12 @@ struct DemoTabsContentView: View {
     private let name: String
     @ViewBuilder private let info: () -> DemoContentInfoView
 
+    @State private var scrollPosition = ScrollPosition()
     // MARK: - Body
   
     var body: some View {
         MaterialTabsScroll(
-            tab: tab
+            tab: tab, scrollPosition: $scrollPosition
         ) { _ in
             LazyVStack(spacing: 0) {
                 info()

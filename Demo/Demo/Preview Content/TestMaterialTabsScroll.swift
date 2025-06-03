@@ -21,6 +21,7 @@ struct TestMaterialTabsScroll: View {
     @State private var scrollItem: Int?
     @State private var scrollUnitPoint: UnitPoint = .top
 
+    @State private var scrollPosition = ScrollPosition()
     // MARK: - Body
 
     var body: some View {
@@ -36,20 +37,25 @@ struct TestMaterialTabsScroll: View {
                 Color.yellow.opacity(0.25)
             }
         ) {
-            MaterialTabsScroll(
-                tab: 0,
-                reservedItem: -1,
-                scrollItem: $scrollItem,
-                scrollUnitPoint: $scrollUnitPoint
-            ) { _ in
+//            MaterialTabsScroll(
+//                tab: 0,
+//                reservedItem: -1,
+//                scrollItem: $scrollItem,
+//                scrollUnitPoint: $scrollUnitPoint
+//            ) { _ in
+            MaterialTabsScroll(tab: 0, scrollPosition: $scrollPosition) { _ in
                 LazyVStack(spacing: 0) {
                     ForEach(0..<25) { index in
                         VStack(spacing: 0) {
                             Rectangle().fill(.black.opacity(0.2)).frame(height: 1)
                             Spacer()
                             Button("Tap Row \(index)") {
-                                scrollUnitPoint = .top
-                                scrollItem = index
+//                                scrollUnitPoint = .top
+//                                scrollItem = index
+//                                scrollPosition.scrollTo(id: index, anchor: .top)
+                                withAnimation {
+                                    scrollPosition.scrollTo(y: 200)
+                                }
                             }
                             .buttonStyle(.bordered)
                             Spacer()

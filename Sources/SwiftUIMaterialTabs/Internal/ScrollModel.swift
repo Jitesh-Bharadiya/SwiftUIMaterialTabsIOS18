@@ -4,14 +4,13 @@
 
 import SwiftUI
 
+@available(iOS 18.0, *)
 @MainActor
 class ScrollModel<Item, Tab>: ObservableObject where Item: Hashable, Tab: Hashable {
 
     // MARK: - API
 
-    #if canImport(ScrollPosition)
     @Published var scrollPosition: ScrollPosition = ScrollPosition(idType: Item.self)
-    #endif
     @Published var scrollItem: Item?
     @Published var scrollUnitPoint: UnitPoint = .top
     @Published private(set) var appeared = false
@@ -31,11 +30,9 @@ class ScrollModel<Item, Tab>: ObservableObject where Item: Hashable, Tab: Hashab
                 headerModel?.scrolled(tab: tab, contentOffset: contentOffset, deltaContentOffset: deltaOffset)
             }
         case .scrollPosition:
-            #if canImport(ScrollPosition)
             if expectingContentOffset != contentOffset {
                 headerModel?.scrolled(tab: tab, contentOffset: contentOffset, deltaContentOffset: deltaOffset)
             }
-            #endif
         }
     }
 
@@ -56,11 +53,9 @@ class ScrollModel<Item, Tab>: ObservableObject where Item: Hashable, Tab: Hashab
         selectedTab = headerModel.state.headerContext.selectedTab
     }
 
-    #if canImport(ScrollPosition)
     func scrollPositionChanged(_ position: ScrollPosition) {
         scrollPosition = position
     }
-    #endif
 
     func scrollItemChanged(_ item: Item?) {
         scrollItem = item
@@ -179,9 +174,7 @@ class ScrollModel<Item, Tab>: ObservableObject where Item: Hashable, Tab: Hashab
                 scrollItem = nil
             }
         case .scrollPosition:
-            #if canImport(ScrollPosition)
             scrollPosition = ScrollPosition(point: CGPoint(x: 0.5, y: 150))
-            #endif
         }
     }
 }

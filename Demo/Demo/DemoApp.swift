@@ -9,7 +9,7 @@ import SwiftUIMaterialTabs
 struct DemoApp: App {
     var body: some Scene {
         WindowGroup {
-            DemoView()
+            TestMaterialTabsScroll()
         }
     }
 }
