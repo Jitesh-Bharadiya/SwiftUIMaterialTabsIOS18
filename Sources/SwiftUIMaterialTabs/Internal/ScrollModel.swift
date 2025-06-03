@@ -10,7 +10,7 @@ class ScrollModel<Item, Tab>: ObservableObject where Item: Hashable, Tab: Hashab
 
     // MARK: - API
 
-    @Published var scrollPosition: ScrollPosition = ScrollPosition(idType: Item.self)
+    @Published var scrollPosition: ScrollPosition = ScrollPosition()
     @Published var scrollItem: Item?
     @Published var scrollUnitPoint: UnitPoint = .top
     @Published private(set) var appeared = false
