@@ -156,8 +156,8 @@ class ScrollModel<Item, Tab>: ObservableObject where Item: Hashable, Tab: Hashab
         default:
             contentOffset = contentOffset + deltaHeaderOffset
         }
-        switch scrollMode {
-        case .scrollAnchor:
+//        switch scrollMode {
+//        case .scrollAnchor:
             scrollUnitPoint = UnitPoint(
                 x: UnitPoint.top.x,
                 y: (headerModel.state.headerContext.maxOffset - contentOffset) / (headerModel.state.safeHeight - 1)
@@ -173,9 +173,9 @@ class ScrollModel<Item, Tab>: ObservableObject where Item: Hashable, Tab: Hashab
                 try? await Task.sleep(for: .seconds(0.05))
                 scrollItem = nil
             }
-        case .scrollPosition:
+//        case .scrollPosition:
             scrollPosition = ScrollPosition(point: CGPoint(x: 0.5, y: 150))
-        }
+//        }
     }
 }
 
