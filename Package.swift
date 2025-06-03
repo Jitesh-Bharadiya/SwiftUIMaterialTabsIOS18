@@ -20,5 +20,6 @@ let package = Package(
         .testTarget(
             name: "SwiftUIMaterialTabsTests",
             dependencies: ["SwiftUIMaterialTabs"]),
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )
